@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yy.mapper.SignMapper">
+
+    <resultMap id="BaseResultMap" type="com.yy.pojo.Sign">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="label" column="label" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,label
+    </sql>
+    <select id="selectTop8" resultType="com.yy.pojo.Sign">
+        SELECT sign.id,sign.label label,count(*) `count`,type FROM `essay_sign`
+            left join sign on sign.id = essay_sign.sign_id
+        GROUP BY sign_id
+        order by count desc limit 8
+    </select>
+</mapper>

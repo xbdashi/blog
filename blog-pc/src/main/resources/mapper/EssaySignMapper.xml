@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yy.mapper.EssaySignMapper">
+
+    <resultMap id="BaseResultMap" type="com.yy.pojo.EssaySign">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="signId" column="sign_id" jdbcType="INTEGER"/>
+            <result property="essayId" column="essay_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sign_id,essay_id
+    </sql>
+    <select id="selectPageWithSign" resultType="com.yy.pojo.Sign">
+        select s.id id, s.label label from essay_sign es
+        left join sign s on s.id = es.sign_id
+        where es.essay_id in (select id from essay where id = #{id})
+    </select>
+</mapper>
