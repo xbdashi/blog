@@ -77,6 +77,8 @@ import { onMounted, reactive, ref } from 'vue'
 import SysDialog from '@/compoents/SysDialog.vue'; 
 import useDialog from '@/hook/useDialog';
 import { loadAllParams } from '@/tools/page';
+import { useUserStore } from '@/stores/user';
+const {user} = useUserStore()
 const {dialog,show,onClose,onConfirm} = useDialog() 
 const addMondel = reactive({
     id: '',
@@ -128,6 +130,8 @@ const commit = () => {
     ruleFormRef.value.validate(async valid => {
         if (valid) {
             // 提交表单
+            addMondel.userId = user.id
+            console.log(addMondel)
             const res = await useAddEssay(addMondel)
             if(res.code === 200){
                 ElMessage.success(res.msg)
@@ -191,7 +195,6 @@ const ruleSign = reactive({
 const commitSign = ()=>{
     signFormRef.value.validate(async valid => {
         if (valid) {
-            
             const res = await useAddTag(signMondel)
             if(res.code === 200){
                 ElMessage.success(res.msg)

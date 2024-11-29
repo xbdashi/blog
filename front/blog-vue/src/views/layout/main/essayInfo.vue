@@ -5,7 +5,10 @@
         </div>
         <div class="avtor">
             <!-- <div><img :src="essay.user.photo" width="50px"></div> -->
-            <div><img src="@/assets/avtor.png" width="50px"></div>
+            <div style="margin-right:8px;width:50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
+                    <img v-if="essay.user.photo &&essay.user.photo != ''" :src="essay.user.photo" width="60px" alt="">
+                    <img v-else src="@/assets/avtor.png" width="35px" alt="">
+            </div>
             <div>
                 <p>{{ essay.user.username }}</p>
                 <p style="color: #333; font-size: 12px;"> {{ formatDate(essay.createTime) }} 阅读{{ essay.views}}评论{{ essay.commentNum }}</p>
@@ -35,7 +38,10 @@
           <div class="input_remark" style="margin-top: 20px;display: flex;justify-content: start;align-items: start;flex-wrap: wrap;">
             <!-- 头像 -->
             <div class="avtor" style="width: 10%;">
-                <div><img src="@/assets/avtor.png" width="50px"></div>
+                <div style="width: 50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
+                    <img v-if="user.photo &&user.photo != ''" :src="user.photo" width="60px" alt="">
+                    <img v-else src="@/assets/avtor.png" width="35px" alt="">
+                </div>
             </div>
             <!-- 评论 -->
             <div style="width: 90%;">
@@ -57,7 +63,10 @@
                     <!-- 当前用户的头像和 -->
                     <div class="avtor">
                          <!-- <div><img :src="essay.user.photo" width="50px"></div> -->
-                        <div><img src="@/assets/avtor.png" width="50px"></div>
+                         <div style="margin-right:8px;width:50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
+                            <img v-if="item.user.photo &&item.user.photo != ''" :src="item.user.photo" width="60px" alt="">
+                            <img v-else src="@/assets/avtor.png" width="35px" alt="">
+                         </div>
                         <div>
                             <p>{{ item.user.username }}</p>
                             <p style="color: #333; font-size: 12px;"> {{ formatDate(item.createTime) }}</p>
@@ -80,6 +89,8 @@ import { Edit } from '@element-plus/icons-vue';
 import { computed, onMounted, reactive, ref, toRef} from 'vue';
 import { useAddComment, useGetCommentByEssayId } from '@/api/layout';
 import { ElNotification } from 'element-plus';
+import { useUserStore } from '@/stores/user';
+const {user} = useUserStore() // 获取到当前用户的数据
 const {getInfo} = useInfoStore()
 // 获取当前文章的数据
 const essay = toRef(JSON.parse(getInfo()))
@@ -88,7 +99,7 @@ console.log(essay)
 const remarkModel = reactive({
     comment: '',
     essayId: essay.value.id,
-    userId:'1'
+    userId:''
 })
 // 获取到当前文章的评论
 const commentList = ref([]);
@@ -104,6 +115,7 @@ const addRemark =async ()=>{
     })
     return
     }
+    remarkModel.userId = user.id
     const res = await useAddComment(remarkModel)
     if(res.code === 200){
         ElNotification({
@@ -111,7 +123,7 @@ const addRemark =async ()=>{
         message: '评论成功',
         type: 'success',
     })
-
+    getCommentList();
     }
 }
 // 获取当前文章对应的评论
@@ -144,6 +156,7 @@ console.log()
         display: flex;
         width: 300px;
         align-items: center;
+
         div:nth-child(1){
             width: 20%;
             border-radius: 50px;

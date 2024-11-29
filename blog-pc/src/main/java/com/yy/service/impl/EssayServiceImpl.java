@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,7 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
         essay.setLikes(0L);
         essay.setViews(0L);
         essay.setCommentNum(0L);
-        this.baseMapper.insert(essay);
+        essay.setCreateTime(LocalDateTime.now());
         // 插入表
         int insert = this.baseMapper.insert(essay);
         List<Long> signIds = Arrays.stream(essay.getLabelIds()).collect(Collectors.toList());

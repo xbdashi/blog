@@ -20,7 +20,8 @@
         </div>
         <div class="login">
             <div>
-              <img src="@/assets/avtor.png" width="40px">
+              <img v-if="user.photo && user.photo != ''" :src="user.photo" width="35px" alt="">
+              <img v-else src="@/assets/avtor.png" width="35px" alt="">
             </div>
             <div>
               <el-dropdown trigger="click">

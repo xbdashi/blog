@@ -42,7 +42,7 @@ class Http{
                 console.log('进入响应拦截器')
                 if(res.data.code === 401){
                     ElMessage.warning(res.data.msg)
-                    router.push("/login")
+                    router.push("/")
                     return
                 }
                 if(res.data.code == 200){

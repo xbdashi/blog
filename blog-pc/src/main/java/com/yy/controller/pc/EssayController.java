@@ -56,8 +56,9 @@ public class EssayController {
     @PostMapping
     @ApiOperation(value = "新增文章")
     public Result<String> save(@RequestBody Essay essay){
+        log.info("新增文章的内容{}",essay);
         // TODO 待做，查询当前创建人的id
-        essay.setUserId(1L); // 先默认为1
+        essay.setUserId(essay.getUserId()); // 先默认为1
         int rows = essayService.insertEssay(essay);
         if(rows < 1){
             throw new InsertException(ExceptionStatus.INSERT_EXCEPTION,"插入异常");

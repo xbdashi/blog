@@ -14,7 +14,7 @@
         id,sign_id,essay_id
     </sql>
     <select id="selectPageWithSign" resultType="com.yy.pojo.Sign">
-        select s.id id, s.label label from essay_sign es
+        select s.id id, s.label label,s.type type from essay_sign es
         left join sign s on s.id = es.sign_id
         where es.essay_id in (select id from essay where id = #{id})
     </select>

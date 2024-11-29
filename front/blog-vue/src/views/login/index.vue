@@ -63,7 +63,7 @@ const login = ()=>{
                 sessionStorage.setItem('token',res.data.token)
                 // 将当前用户信息存入pinia
                 setUser(res.data.user)
-                router.push('/')
+                router.push('/home')
             }else{
                 ElMessage.error(res.message)
             }

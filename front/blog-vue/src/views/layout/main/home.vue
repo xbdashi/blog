@@ -22,14 +22,17 @@
                         <div class="userInfo">
                             <div class="userName">
                                 <div class="userAvatar">
-                                    <img src="@/assets/avtor.png" width="25px" alt="">
+                                    <div style="display: flex;justify-content: center;align-items: center;border-radius: 50%;width: 35px;height: 35px;overflow: hidden;">
+                                        <img v-if="item.user.photo && item.user.photo != ''" :src="item.user.photo" width="35px" alt="">
+                                        <img v-else src="@/assets/avtor.png" width="35px" alt="">
+                                    </div>
                                     &nbsp;&nbsp;
                                     <span>{{item.user.username}}</span>
                                 </div>
                             </div>
                             <div class="sign">
                                 <!-- 标签 -->
-                                <el-tag style="margin-right: 5px;" type="success" v-for="tag in item.signsList" :key="tag.id">{{ tag.label}}</el-tag>
+                                <el-tag style="margin-right: 5px;" :type="tag.type" v-for="tag in item.signsList" :key="tag.id">{{ tag.label}}</el-tag>
                             </div>
                             <!-- 发布时间 -->
                             <div class="createTime" style="text-align: right;margin-right: 20px;">

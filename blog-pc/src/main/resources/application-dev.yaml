@@ -39,4 +39,17 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+## x-file-store 文件存储
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: aliyun-oss-1 #默认使用的存储平台
+    aliyun-oss:
+      - platform: aliyun-oss-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: LTAI5tGrKDvwyA9E4sEJzCEu
+        secret-key: BrySY7Xn3exR7rcDUcp0Gzty0a4FdZ
+        end-point: oss-cn-beijing.aliyuncs.com
+        bucket-name: blog009
+        domain: https://blog009.oss-cn-beijing.aliyuncs.com/ # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
+        base-path: os/ # 基础路径
 
