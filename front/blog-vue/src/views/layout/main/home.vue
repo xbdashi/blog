@@ -22,7 +22,7 @@
                         <div class="userInfo">
                             <div class="userName">
                                 <div class="userAvatar">
-                                    <div style="display: flex;justify-content: center;align-items: center;border-radius: 50%;width: 35px;height: 35px;overflow: hidden;">
+                                    <div style="display: flex;justify-content: center;align-items: center;border-radius: 50%;width:35px;height:35px;">
                                         <img v-if="item.user.photo && item.user.photo != ''" :src="item.user.photo" width="35px" alt="">
                                         <img v-else src="@/assets/avtor.png" width="35px" alt="">
                                     </div>
@@ -38,7 +38,6 @@
                             <div class="createTime" style="text-align: right;margin-right: 20px;">
                                 <el-icon><Timer/></el-icon>
                                 <!-- 格式化时间 -->
-                                 
                                 <span>{{ formatDate(item.createTime) }}</span>
                             </div>
                         </div>
@@ -54,7 +53,7 @@
                     margin-bottom: 20px;
                     padding-bottom: 20px;
                     ">
-                        <h2>{{ user.username }}</h2>
+                        <h2>{{ user?.username ? user?.username : '彭于晏'}}</h2>
                     </div>
                     <div>
                         <p>
@@ -114,11 +113,12 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import {useGetAssay,useGetAllTag, useGetHotAssay, useGetLatestAssay, useAddViews} from '@/api/layout/index';
 import {useTitleStore} from '@/stores/search'
 import { useRouter } from 'vue-router';
-import { loadAllParams ,loadTop8Params} from '@/tools/page';
+import { loadTop8Params} from '@/tools/page';
 import { useInfoStore } from '@/stores/essayInfo';
 import { useUserStore } from '@/stores/user';
-const {user} = useUserStore()
 const {setInfo} = useInfoStore()
+const {user} = useUserStore()
+
 const router = useRouter()
 // 添加文字的 消息提示
 const isTooltipVisible = ref(false);
@@ -184,6 +184,7 @@ watch(()=>getTitle(), async()=>{
 })
 // 到底加载
 const load = async ()=>{
+    console.log("到底了...")
     pageData.pageNum++
     const res = await useGetAssay(pageData)
     dataList.value.push(...res.data.rows)

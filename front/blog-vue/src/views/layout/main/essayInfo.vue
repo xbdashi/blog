@@ -6,15 +6,14 @@
         <div class="avtor">
             <!-- <div><img :src="essay.user.photo" width="50px"></div> -->
             <div style="margin-right:8px;width:50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
-                    <img v-if="essay.user.photo &&essay.user.photo != ''" :src="essay.user.photo" width="60px" alt="">
-                    <img v-else src="@/assets/avtor.png" width="35px" alt="">
+                <img v-if="essay.user.photo &&essay.user.photo != ''" :src="essay.user.photo" width="60px" alt="">
+                <img v-else src="@/assets/avtor.png" width="35px" alt="">
             </div>
             <div>
                 <p>{{ essay.user.username }}</p>
                 <p style="color: #333; font-size: 12px;"> {{ formatDate(essay.createTime) }} 阅读{{ essay.views}}评论{{ essay.commentNum }}</p>
             </div>
         </div>
-
         <!-- 内容展示部分 -->
          <div class="content">
             <v-md-preview :text="essay.content"/>
@@ -58,43 +57,32 @@
           </div>
           <!-- 评论内容 -->
            <div class="remark">
-                <h4 style="margin-bottom: 10px;">{{ essay.commentNum }}条评论</h4>
-                <div class="remark_card" v-for="item in commentList">
-                    <!-- 当前用户的头像和 -->
-                    <div class="avtor">
-                         <!-- <div><img :src="essay.user.photo" width="50px"></div> -->
-                         <div style="margin-right:8px;width:50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
-                            <img v-if="item.user.photo &&item.user.photo != ''" :src="item.user.photo" width="60px" alt="">
-                            <img v-else src="@/assets/avtor.png" width="35px" alt="">
-                         </div>
-                        <div>
-                            <p>{{ item.user.username }}</p>
-                            <p style="color: #333; font-size: 12px;"> {{ formatDate(item.createTime) }}</p>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <div>{{item.comment}}</div>
-                        <div>
-                            <i class="iconfont icon-heart-fill" @click="addLike"></i><span>{{ item.likes }}</span>&nbsp;&nbsp;
-                            <i class="iconfont icon-xinsui"  @click="addLike"></i><span>{{ item.disLikes }}</span>
-                        </div>
-                    </div>
-                </div>
+                <h4 style="margin-bottom: 10px;">{{ commentList.count }}条评论</h4>
+                <!-- 评论内容 -->
+                <Comment 
+                :commentList="commentList"
+                @addLike="addLike"
+                @showReplyBox="showReplyBox"
+                @cancelReply="cancelReply"
+                @submitReply="submitReply"
+                />
            </div>
     </div>
 </template>
 <script setup>
 import { useInfoStore } from '@/stores/essayInfo';
 import { Edit } from '@element-plus/icons-vue';
+import Comment from '@/compoents/Comment.vue';
 import { computed, onMounted, reactive, ref, toRef} from 'vue';
-import { useAddComment, useGetCommentByEssayId } from '@/api/layout';
+import { useAddComment, useGetAllCommentByEssayId, useGetCommentByEssayId } from '@/api/layout';
 import { ElNotification } from 'element-plus';
 import { useUserStore } from '@/stores/user';
+import useTimeFormat from '@/hook/useTimeFormat';
+const {formatDate} = useTimeFormat()
 const {user} = useUserStore() // 获取到当前用户的数据
 const {getInfo} = useInfoStore()
 // 获取当前文章的数据
 const essay = toRef(JSON.parse(getInfo()))
-console.log(essay)
 // 评论内容
 const remarkModel = reactive({
     comment: '',
@@ -123,27 +111,56 @@ const addRemark =async ()=>{
         message: '评论成功',
         type: 'success',
     })
-    getCommentList();
+    getCommentList(remarkModel.essayId);
     }
 }
-// 获取当前文章对应的评论
-const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
+
+// 获取所有的评论数量
+const getCommentCount = async ()=>{
+    const res = await useGetAllCommentByEssayId(remarkModel.essayId)
+    if(res.code === 200){
+        commentList.value.count = res.data
+    }
+}
+const getCommentList = async ()=>{
+    console.log("执行了getCommentList")
+    const res = await useGetCommentByEssayId(essay.value.id)
+    console.log(res)
+    commentList.value = res.data.map(comment => ({
+        ...comment,
+        showReply: false,
+        replyContent: '',
+        isLiked: false,
+        isDisliked: false,
+
+    }))
+    getCommentCount()
+} 
+
+// 添加新的响应式数据和方法
+const showReplyBox = (item) => {
+    console.log(item)
+    item.showReply = !item.showReply;
+    item.replyContent = '';
 }
 
-const getCommentList = async ()=>{
-    const res = await useGetCommentByEssayId(essay.value.id)
-    commentList.value = res.data
-} 
+const cancelReply = (item) => {
+    item.showReply = false;
+    item.replyContent = '';
+}
+
+const submitReply = async (item) => {
+    // TODO: 实现回复提交逻辑
+    remarkModel.comment = item.replyContent
+    console.log('子组件提交过来的评论',item)
+    remarkModel.parentId = item.id
+    addRemark()
+    item.showReply = false;
+}
+
 onMounted(()=>{
     getCommentList()
 })
-// 点击之后就变红
-const addLike = ()=>{
- // 给点击的i上like类
-console.log()
-}
 </script>
 <style scoped>
 .main{
@@ -152,22 +169,6 @@ console.log()
     padding: 0 100px;
     background-color: white;
     padding-bottom: 20px;
-    .avtor{
-        display: flex;
-        width: 300px;
-        align-items: center;
-
-        div:nth-child(1){
-            width: 20%;
-            border-radius: 50px;
-            overflow: hidden;
-          
-        }
-        div:last-child{
-            width: 80%;
-        
-        }
-    }
 }
 .tag-btn{
     margin:5px 0 0 5px;
@@ -180,26 +181,5 @@ console.log()
     background-color:rgb(95, 184, 120) ;
     color:white
 }
-.remark_card{
-    padding: 20px 0;
-    border-bottom: 1px solid #ccc;
 
-    .content{
-        display: flex;
-        justify-content: space-around;
-    
-        div:nth-child(1){
-            width:55%;
-            cursor: pointer;
-        }
-        div:nth-child(2){
-            width: 15%;
-            cursor: pointer;
-            transition: 0.3s all;
-            .like{
-                color: red;
-            }
-        }
-    }
-}
 </style>

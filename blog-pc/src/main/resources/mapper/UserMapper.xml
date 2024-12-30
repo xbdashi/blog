@@ -4,18 +4,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yy.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.yy.pojo.User">
-        <id property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="LONGVARCHAR"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="photo" column="photo" jdbcType="VARCHAR"/>
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
-        <result property="isIdentity" column="is_identity" jdbcType="INTEGER"/>
-        <result property="provinceId" column="province_id" jdbcType="INTEGER"/>
+        <result property="isIdentity" column="is_identity" jdbcType="LONGVARCHAR"/>
+        <result property="provinceId" column="province_id" jdbcType="LONGVARCHAR"/>
         <result property="cityId" column="city_id" jdbcType="INTEGER"/>
-        <result property="distractId" column="distract_id" jdbcType="INTEGER"/>
-        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
-        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="distractId" column="distract_id" jdbcType="LONGVARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="LONGVARCHAR"/>
+        <result property="isLogin" column="is_login" jdbcType="LONGVARCHAR"/>
+        <result property="qq" column="qq" jdbcType="LONGVARCHAR"/>
+        <result property="wchat" column="wchat" jdbcType="LONGVARCHAR"/>
+        <result property="version" column="version" jdbcType="LONGVARCHAR"/>
         <result property="fans" column="fans" jdbcType="VARCHAR"/>
         <result property="focus" column="focus" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -25,7 +28,7 @@
     <sql id="Base_Column_List">
         id,username,password,
         email,photo,phone,province_id,city_id,distract_id,
-        is_identity,is_delete,version,
+        is_identity,qq,wcaht,is_delete,is_login,version,
         fans,focus,create_time,
         update_time
     </sql>

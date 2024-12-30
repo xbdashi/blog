@@ -46,3 +46,11 @@ export const useGetCaptcha = () => {
 export const useLogin = (data: any) => {
   return http.post("/login", data);
 };
+// 通过parentid查询对应的username
+export const useGetUsernameByParentId = (parentId:string) => {
+  return http.get(`/comment/parent/${parentId}`)
+}
+// 根据文章id查询所有的评论
+export const useGetAllCommentByEssayId = (essayId:string)=>{
+  return http.get(`/comment/count/${essayId}`)
+}

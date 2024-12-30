@@ -3,6 +3,7 @@ package com.yy.service;
 import com.yy.pojo.Essay;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yy.pojo.dto.EssayPageDto;
+import com.yy.pojo.vo.CommentVo;
 import com.yy.pojo.vo.EssayVo;
 import com.yy.utils.PageResult;
 import com.yy.utils.Result;
@@ -25,5 +26,8 @@ public interface EssayService extends IService<Essay> {
     List<Essay> latest();
 
     int insertEssay(Essay essay);
+
+
+    List<CommentVo> selectById(Long essayId);
 
 }

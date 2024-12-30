@@ -19,23 +19,12 @@
           <el-button type="primary" :icon="Search" @click="searchBtn">搜索</el-button>
         </div>
         <div class="login">
-            <div>
-              <img v-if="user.photo && user.photo != ''" :src="user.photo" width="35px" alt="">
-              <img v-else src="@/assets/avtor.png" width="35px" alt="">
-            </div>
-            <div>
-              <el-dropdown trigger="click">
-                <span class="el-dropdown-link" style="padding: 0 20px;">
-                  {{user.username}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </span>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item :icon="User">个人空间</el-dropdown-item>
-                    <el-dropdown-item @click="logout" :icon="SwitchButton">退出登录</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-            </el-dropdown>
-            </div>
+
+          <div>
+            <!-- <img v-if="user.photo && user.photo != ''" src='@/assets/header.jpg' width="35px" alt="">
+            <img v-else src="@/assets/avtor.png" width="35px" alt=""> -->
+            <img src="@/assets/avtor.png" width="35px" alt="">
+          </div>
         </div>
       </header>
     </div>

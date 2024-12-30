@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.yy.pojo.Comment">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="assayId" column="assay_id" jdbcType="VARCHAR"/>
+            <result property="essayId" column="assay_id" jdbcType="VARCHAR"/>
             <result property="comment" column="comment" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="is_delete" jdbcType="VARCHAR"/>
@@ -14,7 +14,7 @@
 
     <sql id="Base_Column_List">
         id,assay_id,comment,
-            likes,dis_likes,
+            likes,parent_id,
         create_time,is_delete
     </sql>
 </mapper>

@@ -1,28 +1,43 @@
 <template>
     <div class="container">
-        <div class="login">
-            <h2 style="color: black;margin: 20px 0;">登录</h2>
-            <el-form ref="loginFormRef" :rules="rules" :model="loginModel" label-width="auto" style="max-width: 700px">
-                <el-form-item prop="username" label="用户名">
-                    <el-input placeholder="请输入用户名" v-model="loginModel.username" />
+        <div class="login-card">
+            <h2 class="title">欢迎登录</h2>
+            <el-form ref="loginFormRef" :rules="rules" :model="loginModel" label-width="0" class="login-form">
+                <el-form-item prop="username">
+                    <el-input 
+                        placeholder="请输入用户名" 
+                        v-model="loginModel.username"
+                        prefix-icon="User"
+                    />
                 </el-form-item>
-                <el-form-item prop="password" label="密码">
-                    <el-input v-model="loginModel.password" type="password" />
+                <el-form-item prop="password">
+                    <el-input 
+                        v-model="loginModel.password" 
+                        type="password"
+                        placeholder="请输入密码"
+                        prefix-icon="Lock" 
+                        show-password
+                    />
                 </el-form-item>
-                <el-form-item label="验证码">
-                    <div style="display: flex;align-items:top;">
-                        <div style="width: 40%;"><el-input v-model="loginModel.code" /></div>
-                        <div style="color: black; width: 40%;"><img @click="getCaptcha" :src="captchaUrl" alt=""></div>
+                <el-form-item>
+                    <div class="captcha-container">
+                        <el-input 
+                            v-model="loginModel.code"
+                            placeholder="请输入验证码"
+                            prefix-icon="Key"
+                        />
+                        <img @click="getCaptcha" :src="captchaUrl" alt="验证码" class="captcha-img">
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-button style="width: 100%;" type="primary" @click="login">登录</el-button>
+                    <el-button type="primary" class="login-btn" @click="login">登 录</el-button>
                 </el-form-item>
             </el-form>
         </div>
     </div>
 </template>
 <script setup>
+import { User, Lock, Key } from '@element-plus/icons-vue'
 import { useGetCaptcha, useLogin } from '@/api/layout';
 import { onMounted, reactive,ref } from 'vue'
 import { ElMessage } from 'element-plus';
@@ -75,29 +90,76 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.container{
+<style scoped lang="scss">
+.container {
     width: 100%;
     height: 100vh;
-    background: url('@/assets/bg.jpg') no-repeat;
+    background: url('@/assets/bg.jpg') no-repeat center;
     background-size: cover;
     display: flex;
-    justify-content: end;
-    
+    justify-content: center;
     align-items: center;
-    .login{
-        margin-right: 200px;
-        width: 500px;
-        height: 400px;
-        border-radius: 20px;
-        background-color: rgba(255, 255, 255, 0.7);
-        color: white;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
+    
+    .login-card {
+        width: 420px;
+        padding: 40px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        
+        .title {
+            color: #303133;
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .login-form {
+            :deep(.el-input) {
+                --el-input-height: 45px;
+                
+                .el-input__wrapper {
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+                }
+            }
+            
+            .captcha-container {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                
+                .el-input {
+                    flex: 1;
+                }
+                
+                .captcha-img {
+                    height: 45px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                    
+                    &:hover {
+                        transform: scale(1.02);
+                    }
+                }
+            }
+            
+            .login-btn {
+                width: 100%;
+                height: 45px;
+                font-size: 16px;
+                border-radius: 8px;
+                margin-top: 20px;
+                
+                &:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+                }
+            }
+        }
     }
 }
-
 </style>

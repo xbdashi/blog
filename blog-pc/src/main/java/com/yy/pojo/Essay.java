@@ -17,25 +17,17 @@ import lombok.Data;
 public class Essay implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
-
     private Long userId;
-
     private String title;
     private String describes;
-
     private String content;
-
     private Long views;
     // 文章状态 0是已保存，1审核中，2 已发布
     private Long statu;
     private Long likes;
-
     private Long commentNum;
-
     private Integer isDelete;
-
     private LocalDateTime createTime;
-
     private LocalDateTime updateTime;
     @TableField(exist = false)
     private User user;

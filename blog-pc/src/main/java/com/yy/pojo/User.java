@@ -14,7 +14,7 @@ import lombok.Data;
 @TableName(value ="user")
 @Data
 public class User implements Serializable {
-    private Integer id;
+    private Long id;
 
     private String username;
 
@@ -26,13 +26,20 @@ public class User implements Serializable {
 
     private String phone;
 
-    private Integer isIdentity;
-    private Integer provinceId;
-    private Integer cityId;
-    private Integer distractId;
-    private Integer isDelete;
+    private Long isIdentity;
 
-    private Integer version;
+    private Long provinceId;
+
+    private Long cityId;
+
+    private Long distractId;
+
+    private Long isDelete;
+    private String qq;
+    private String wchat;
+    private Long isLogin;
+
+    private Long version;
 
     private String fans;
 

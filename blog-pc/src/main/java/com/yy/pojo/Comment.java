@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -25,13 +27,9 @@ public class Comment implements Serializable {
     private LocalDateTime createTime;
 
     private Long likes;
-    private Long disLikes;
     // 评论用户的id
     private Long userId;
     private String isDelete;
-
-    // 当前用户的信息
-    @TableField(exist = false)
-    private User user;
+    private String parentId;
     private static final long serialVersionUID = 1L;
 }
