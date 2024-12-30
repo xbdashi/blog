@@ -1,5 +1,11 @@
 <template>
     <div class="container">
+        <!-- 展示最新或者是最热的文章 -->
+         <div class="sort">
+            <!-- 如果当前激活就会有绿色样式 -->
+            <span :class="pageData.sort == '2' ? 'isActive':''" @click="active('2')">最新</span> <span style="color: #ccc;">&nbsp;| &nbsp;</span>
+            <span :class="pageData.sort == '1' ? 'isActive':''" @click="active('1')">最热</span>
+         </div>
         <!-- 布局 -->
         <div class="comment_grid" v-infinite-scroll="load">
             <!-- 卡片 -->
@@ -46,7 +52,8 @@
             </div>
             <!-- 展示部分 -->
             <div class="show">
-                <div class="item">
+                <!-- 登录展示框 -->
+                <div class="item" v-show="user">
                     <div style="
                     border-bottom: 1px solid rgb(95, 184, 120);
                     width: 90%;
@@ -66,6 +73,7 @@
                         </p>
                     </div>
                 </div>
+                <!-- 最热标签 -->
                 <div class="item">
                     <div class="pubTitle">
                         <h2>最热标签</h2>
@@ -73,9 +81,9 @@
                     </div>
                     <div class="tag">
                         <button v-for="item in tagTop8">{{ item.label }}</button>
-        
                     </div>
                 </div>
+                <!-- 最热文章 -->
                 <div class="item">
                     <div class="pubTitle">
                         <h3>最热文章</h3>
@@ -87,6 +95,7 @@
                        </ul>
                     </div>
                 </div>
+                <!-- 最新文章 -->
                 <div class="item">
                     <div class="pubTitle">
                         <h3>最新文章</h3>
@@ -104,13 +113,12 @@
             <div class="tooltip" v-if="isTooltipVisible">新增文章</div>
             <i class="iconfont icon-bianji"></i>
          </div>
-       
     </div>
 </template>
 <script setup lang="ts">
 import { ChatDotSquare, Handbag, Location, Phone, Timer, View } from '@element-plus/icons-vue';
 import { onMounted, reactive, ref, watch } from 'vue';
-import {useGetAssay,useGetAllTag, useGetHotAssay, useGetLatestAssay, useAddViews} from '@/api/layout/index';
+import {useGetAssay,useGetAllTag, useAddViews,useGetSort} from '@/api/layout/index';
 import {useTitleStore} from '@/stores/search'
 import { useRouter } from 'vue-router';
 import { loadTop8Params} from '@/tools/page';
@@ -136,8 +144,10 @@ const {getTitle} = useTitleStore()
 const pageData = reactive({
     pageNum: 1,
     pageSize: 6,
-    title:''
+    title:'',
+    sort:"2" // 默认为最新
 })
+
 const dataList = ref<any>([])
 
 // 获取top8
@@ -154,13 +164,13 @@ const addBtn = ()=>{
 // 最热文章
 const hotList = ref([])
 const hot = async ()=>{
-    const res = await useGetHotAssay(loadTop8Params)
+    const res = await useGetSort('HOT')
     hotList.value = res.data
 }
 // 最新文章
 const newList = ref([])
 const getLatest = async ()=>{
-    const res = await useGetLatestAssay(loadTop8Params)
+    const res = await useGetSort('FRESH')
     newList.value = res.data
 }
 const formatDate = (dateString:string) => {
@@ -173,10 +183,15 @@ const getEssay = async ()=>{
     const res = await useGetAssay(pageData)
     dataList.value = res.data.rows
 }
+// 查看文章的最新或最热
+const isActive = ref(false)
+const active = (sort:string)=>{
+    pageData.sort = sort
+    getEssay()
+}
 // 监视数据变化
 watch(()=>getTitle(), async()=>{
     // 发生变化就执行
-    console.log('store变化了..')
     pageData.title = getTitle()
     await getEssay()
 
@@ -199,6 +214,7 @@ const info = async(item:any)=>{
         name: 'info', // 假设你的路由配置中有 name 为 'info' 的路由
     });
 }
+
 onMounted(()=>{
     getEssay();
     top8();
@@ -208,12 +224,15 @@ onMounted(()=>{
 
 </script>  
 <style scoped>
+.isActive{
+    color: #5fb878;
+}
 .pubTitle{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;   
-        border-bottom: 1px solid #5fb878;
-        padding: 20px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;   
+    border-bottom: 1px solid #5fb878;
+    padding: 20px 5px;
 }
 
 .container{
@@ -221,6 +240,11 @@ onMounted(()=>{
     height: 100vh;
     border-radius: 10px;
 
+    .sort{
+        span{
+            cursor: pointer;
+        }
+    }
     .comment_grid{
         position: relative;
     }
@@ -362,6 +386,7 @@ onMounted(()=>{
         height: 60px;
         display: flex;
         align-items: center;
+        cursor: pointer;
     }
 }
 

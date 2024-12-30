@@ -14,24 +14,49 @@
             </ul>
           </nav>
         </div>
-        <div class="search">
-          <el-input placeholder="请输入搜索内容" v-model="search" clearable style="width: 200px;"/>
-          <el-button type="primary" :icon="Search" @click="searchBtn">搜索</el-button>
-        </div>
         <div class="login">
-
-          <div>
-            <!-- <img v-if="user.photo && user.photo != ''" src='@/assets/header.jpg' width="35px" alt="">
-            <img v-else src="@/assets/avtor.png" width="35px" alt=""> -->
-            <img src="@/assets/avtor.png" width="35px" alt="">
+          <div style="margin-right: 55px;">
+            <img v-if="user?.photo && user?.photo != ''" :src='user.photo ? user.photo :"@/assets/header.jpg"' width="35px" alt="">
+            <img v-else src="@/assets/avtor.png" alt="">
           </div>
+          <!-- 鼠标悬浮弹出菜单 -->
+          <div class="drawer">
+              <div class="user-info">
+                <div class="img">
+                  <img v-if="user?.photo && user?.photo != ''" :src='user.photo ? user.photo :"@/assets/header.jpg"' alt="">
+                  <img v-else src="@/assets/avtor.png" alt="">
+                </div>
+                <div class="username">{{user?.username ? user?.username : '彭于晏'}}</div>
+              </div>
+              
+              <div class="stats">
+                <div class="stat-item">
+                  <div class="stat-num">{{user?.fans ? user?.fans : '0'}}</div>
+                  <div class="stat-label">粉丝</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-num">{{user?.focus ? user?.focus : '0'}}</div>
+                  <div class="stat-label">关注</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-num">{{user?.likes ? user?.likes : '0'}}</div>
+                  <div class="stat-label">获赞</div>
+                </div>
+              </div>
+              
+              <div class="menu-items">
+                <div class="menu-item" @click="toPersonal"><i class="iconfont icon-yonghu"></i>个人中心</div>
+                <div class="menu-item" @click="toContent"><i class="iconfont icon-neirong"></i>内容管理</div>
+                <div class="menu-item" @click="toMessage"><i class="iconfont icon-xiaoxi"></i>消息列表</div>
+                <div class="menu-item logout" @click="logout"><i class="iconfont icon-guanbi"></i>退出</div>
+              </div>
+            </div>
         </div>
       </header>
     </div>
   </template>
   
 <script setup>
-import { Close, Search, SwitchButton, User } from '@element-plus/icons-vue';
 import { ref, watch } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
 import {useTitleStore} from '@/stores/search'
@@ -62,7 +87,7 @@ const logout = ()=>{
 }
   </script>
   
-  <style scoped>
+<style scoped lang="less">
   header {
     box-shadow: 2px 2px 7px 1px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -94,15 +119,107 @@ const logout = ()=>{
       }
     }
   }
-  .login{
+.login{
     display: flex;
     justify-content: center;
     align-items: center;
-   
-
-    div:nth-child(2){
-      cursor: pointer;
-
+    position: relative;
+    .drawer{
+      position: absolute;
+      top: 40px;
+      right: 0;
+      width: 200px;
+      height:0px;
+      border-radius: 10px;
+      background-color: white;
+      // 展开的时候1s 关闭的时候0.3s
+      transition-property: all;
+      transition-duration: 0.3s, 1s;  
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .user-info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 16px;
+    
+    .img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto 8px;
+     
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    .username {
+      font-weight: 600;
+      font-size: 16px;
     }
   }
+
+  .stats {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 16px;
+
+    .stat-item {
+      text-align: center;
+      
+      .stat-num {
+        font-weight: 600;
+        color: rgb(95, 184, 120);
+      }
+      
+      .stat-label {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+  }
+
+  .menu-items {
+    width: 100%;
+    .menu-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      
+      i {
+        margin-right: 8px;
+      }
+      
+      &:hover {
+        background-color: rgba(95, 184, 120, 0.1);
+        color: rgb(95, 184, 120);
+      }
+      &.logout {
+        color: #ff4d4f;
+        &:hover {
+          background-color: rgba(255, 77, 79, 0.1);
+        }
+      }
+    }
+  }
+}
+
+}
+  .login:hover .drawer {
+  height: 380px;
+  border: 2px solid rgb(95, 184, 120);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
   </style>

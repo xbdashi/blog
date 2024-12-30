@@ -44,6 +44,7 @@ public class User implements Serializable {
     private String fans;
 
     private String focus;
+    private String likes;
 
     private Date createTime;
 

@@ -1,6 +1,7 @@
 package com.yy.enums;
 
 public enum EssayStatus {
+
     SAVED(0L, "已保存"),
     REVIEWING(1L, "审核中"),
     PUBLISHED(2L, "已发布");

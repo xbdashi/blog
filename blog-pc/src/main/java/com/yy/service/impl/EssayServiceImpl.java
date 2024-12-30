@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yy.enums.EssayStatus;
+import com.yy.enums.SortEnums;
 import com.yy.mapper.CommentMapper;
 import com.yy.mapper.UserMapper;
 import com.yy.pojo.Comment;
@@ -48,6 +49,13 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
         Page<Essay> iPage = new Page<>(essayPageDto.getPageNum(), essayPageDto.getPageSize());
         QueryWrapper<Essay> qw = new QueryWrapper<>();
         qw.lambda().like(Essay::getTitle, essayPageDto.getTitle()).orderByDesc(Essay::getCreateTime);
+        qw = new QueryWrapper<>();
+        if(Objects.equals(essayPageDto.getSort().getCode(), SortEnums.HOT.getCode())){
+            qw.lambda().orderByDesc(Essay::getViews);
+        }else{
+            // 以创建时间排asc
+            qw.lambda().orderByAsc(Essay::getCreateTime);
+        }
         Page<Essay> page = page(iPage,qw); // 获取到分页对象
         List<EssayVo> list = new ArrayList<>();
         Optional.ofNullable(page).orElse(new Page<>())

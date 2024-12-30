@@ -38,6 +38,8 @@ public class SysController {
         if (!httpSession.getAttribute("code").equals(loginDto.getCode())) {
             throw new CodeException(400,"验证码错误");
         }
+        // 1为已经登录
+        user.setIsLogin(1L);
         StpUtil.login(user.getId());
         // System.out.println(StpUtil.getTokenInfo().getTokenTimeout());
         Map<String,Object> map = new HashMap<>();

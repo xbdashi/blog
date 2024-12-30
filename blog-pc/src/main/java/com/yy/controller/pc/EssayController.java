@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yy.constants.ExceptionStatus;
+import com.yy.enums.SortEnums;
 import com.yy.exception.InsertException;
 import com.yy.pojo.Essay;
 import com.yy.pojo.dto.EssayPageDto;
@@ -12,12 +13,15 @@ import com.yy.utils.PageResult;
 import com.yy.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/essay")
@@ -32,25 +36,21 @@ public class EssayController {
         log.info("文章分页数据对象{}",essayPageDto);
         return Result.success(essayService.pageWithSign(essayPageDto));
     }
-    // 最热文章
-    @PostMapping("/hot")
-    @ApiOperation(value = "最热文章")
-    public Result<List<Essay>> hot(@RequestBody EssayPageDto essayPageDto){
-        IPage<Essay> iPage = new Page<>(essayPageDto.getPageNum(),essayPageDto.getPageSize());
-        QueryWrapper<Essay> qw = new QueryWrapper<>();
-        qw.lambda().orderByDesc(Essay::getViews);
-        IPage<Essay> page = essayService.page(iPage, qw);
-        return Result.success(page.getRecords());
-    }
-    // 最热文章
-    @PostMapping("/latest")
-    @ApiOperation(value = "最新文章")
-    public Result<List<Essay>> latest(@RequestBody EssayPageDto essayPageDto){
-        IPage<Essay> iPage = new Page<>(essayPageDto.getPageNum(),essayPageDto.getPageSize());
-        QueryWrapper<Essay> qw = new QueryWrapper<>();
-        qw.lambda().orderByDesc(Essay::getCreateTime);
-        IPage<Essay> page = essayService.page(iPage, qw);
-        return Result.success(page.getRecords());
+    // 获取最新或者最热 通过传递过来的参数分辨 1为最热 2为最新
+    @GetMapping("/sort")
+    // 标记里面的参数有个可以不填
+    @ApiOperation(value = "根据参数查询最新或最热", notes = "1为最热 2为最新")
+    public Result<List<Essay>> sort(@RequestParam SortEnums sort){
+        QueryWrapper<Essay> qw = new QueryWrapper<Essay>();
+        // 最热就是以浏览量排倒序
+        if(Objects.equals(sort.getCode(), SortEnums.HOT.getCode())){
+            qw.lambda().orderByDesc(Essay::getViews);
+        }else{
+            // 以创建时间排asc
+            qw.lambda().orderByAsc(Essay::getCreateTime);
+        }
+        List<Essay> list = essayService.list(qw).stream().limit(8).collect(Collectors.toList());
+        return Result.success(200,"操作成功",list);
     }
 
     // 新增和保存

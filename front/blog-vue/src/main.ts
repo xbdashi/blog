@@ -22,7 +22,6 @@ VMdEditor.use(githubTheme, {
   Hljs: hljs,
 });
 
-
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)

@@ -10,13 +10,9 @@ export const useGetAssay = (data: any) => {
 export const useGetAllTag = (data:any) => {
   return http.post("/sign/page",data);
 };
-// 最热文章
-export const useGetHotAssay = (data:any) => {
-  return http.post("/essay/hot",data);
-};
-// 最新文章
-export const useGetLatestAssay = (data:any) => {
-  return http.post("/essay/latest",data);
+// 最新或者最热文章
+export const useGetSort = (data:any) => {
+  return http.get("/essay/sort",{sort:data});
 };
 // 新增文章
 export const useAddEssay = (data: any) => {

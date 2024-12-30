@@ -18,6 +18,7 @@
         <result property="isLogin" column="is_login" jdbcType="LONGVARCHAR"/>
         <result property="qq" column="qq" jdbcType="LONGVARCHAR"/>
         <result property="wchat" column="wchat" jdbcType="LONGVARCHAR"/>
+        <result property="likes" column="likes" jdbcType="VARCHAR"/>
         <result property="version" column="version" jdbcType="LONGVARCHAR"/>
         <result property="fans" column="fans" jdbcType="VARCHAR"/>
         <result property="focus" column="focus" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
 
     <sql id="Base_Column_List">
         id,username,password,
-        email,photo,phone,province_id,city_id,distract_id,
+        email,photo,phone,province_id,city_id,distract_id,likes,
         is_identity,qq,wcaht,is_delete,is_login,version,
         fans,focus,create_time,
         update_time

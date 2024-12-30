@@ -1,10 +1,13 @@
 import router from "@/router";
+import { useUserStore } from "@/stores/user";
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 const consfig = {
     baseURL: "/api",
     timeout: 5000,
 };
+// 获取用户数据
+const {user} = useUserStore();
 export interface Result<T = any>{
     code: number;
     msg:string;

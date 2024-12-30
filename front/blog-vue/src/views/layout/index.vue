@@ -4,9 +4,9 @@
             <Header/>
         </header>
         <section class="pubContain">
-        <Transition name="fade" mode="out-in">
+     
             <RouterView/>
-        </Transition>   
+        
             
         </section>
     </div>
@@ -17,7 +17,7 @@ import Header from '@/views/layout/header/index.vue'
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 1s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from

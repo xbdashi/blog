@@ -38,7 +38,7 @@
             <!-- 头像 -->
             <div class="avtor" style="width: 10%;">
                 <div style="width: 50px;height: 50px;display: flex;justify-content: center;align-items: center;border-radius: 50%;overflow: hidden;">
-                    <img v-if="user.photo &&user.photo != ''" :src="user.photo" width="60px" alt="">
+                    <img v-if="user?.photo &&user?.photo != ''" :src="user?.photo" width="60px" alt="">
                     <img v-else src="@/assets/avtor.png" width="35px" alt="">
                 </div>
             </div>
@@ -78,6 +78,8 @@ import { useAddComment, useGetAllCommentByEssayId, useGetCommentByEssayId } from
 import { ElNotification } from 'element-plus';
 import { useUserStore } from '@/stores/user';
 import useTimeFormat from '@/hook/useTimeFormat';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const {formatDate} = useTimeFormat()
 const {user} = useUserStore() // 获取到当前用户的数据
 const {getInfo} = useInfoStore()
@@ -91,7 +93,6 @@ const remarkModel = reactive({
 })
 // 获取到当前文章的评论
 const commentList = ref([]);
-
 // 最新的一条
 // 添加评论
 const addRemark =async ()=>{
@@ -103,6 +104,15 @@ const addRemark =async ()=>{
     })
     return
     }
+    if(!user){
+        ElNotification({
+            title: '错误',
+            message: '请先登录后再评论',
+            type: 'error',
+        })
+        router.push('/login')
+        return  
+    }
     remarkModel.userId = user.id
     const res = await useAddComment(remarkModel)
     if(res.code === 200){
@@ -111,6 +121,7 @@ const addRemark =async ()=>{
         message: '评论成功',
         type: 'success',
     })
+    remarkModel.comment = ''
     getCommentList(remarkModel.essayId);
     }
 }
