@@ -72,12 +72,14 @@
 <script setup>
 import { useAddEssay, useAddTag, useGetAllTag } from '@/api/layout';
 import { Search } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElNotification } from 'element-plus';
 import { onMounted, reactive, ref } from 'vue'
 import SysDialog from '@/compoents/SysDialog.vue'; 
 import useDialog from '@/hook/useDialog';
 import { loadAllParams } from '@/tools/page';
 import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const {user} = useUserStore()
 const {dialog,show,onClose,onConfirm} = useDialog() 
 const addMondel = reactive({
@@ -128,6 +130,15 @@ const addSign = ()=>{
 }
 const commit = () => {
     ruleFormRef.value.validate(async valid => {
+            if(!user){
+            ElNotification({
+                title: '错误',
+                message: '请先登录后再发布文章',
+                type: 'error',
+            })
+            router.push('/login')
+            return  
+        }
         if (valid) {
             // 提交表单
             addMondel.userId = user.id

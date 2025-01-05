@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+
+import com.yy.pojo.vo.UserVo;
 import lombok.Data;
 
 /**
@@ -30,7 +32,7 @@ public class Essay implements Serializable {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     @TableField(exist = false)
-    private User user;
+    private UserVo user;
     @TableField(exist = false)
     private Long[] labelIds;
     private static final long serialVersionUID = 1L;

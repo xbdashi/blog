@@ -67,36 +67,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Categories" />
-                  <option name="tableName" value="categories" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Comment" />
-                  <option name="tableName" value="comment" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Essay" />
-                  <option name="tableName" value="essay" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="EssayCategories" />
-                  <option name="tableName" value="essay_categories" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="EssaySign" />
-                  <option name="tableName" value="essay_sign" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Identity" />
-                  <option name="tableName" value="identity" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Sign" />
-                  <option name="tableName" value="sign" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="User" />
-                  <option name="tableName" value="user" />
+                  <option name="className" value="Message" />
+                  <option name="tableName" value="message" />
                 </TableUIInfo>
               </list>
             </option>

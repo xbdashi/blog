@@ -9,4 +9,5 @@ import java.util.List;
 @Data
 public class EssayVo extends Essay {
     private List<Sign> signsList;
+
 }

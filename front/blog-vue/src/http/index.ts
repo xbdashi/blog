@@ -6,13 +6,14 @@ const consfig = {
     baseURL: "/api",
     timeout: 5000,
 };
-// 获取用户数据
-const {user} = useUserStore();
+
 export interface Result<T = any>{
     code: number;
     msg:string;
-    data: T;
+    data?: T;
+
 }
+
 class Http{
     private instance: AxiosInstance;
     // 初始化
@@ -46,7 +47,7 @@ class Http{
                 if(res.data.code === 401){
                     ElMessage.warning(res.data.msg)
                     router.push("/")
-                    return
+                    return Promise.reject(res.data.msg)
                 }
                 if(res.data.code == 200){
                     return res.data;
@@ -59,14 +60,14 @@ class Http{
            (err:any) => {
                 err.data = {}
                 err.data.msg = '服务器异常请联系管理员'
-                return err;
+                return Promise.reject(err);
            }
         )
     }
 
     // post请求
-    post<T = Result>(url:string,data?:object):Promise<T>{
-        return this.instance.post(url,data)
+    post<T = Result>(url:string,data?:object,config?:object):Promise<T>{
+        return this.instance.post(url,data,config)
     }
     // put请求
     put<T = Result>(url:string,data?:object):Promise<T>{

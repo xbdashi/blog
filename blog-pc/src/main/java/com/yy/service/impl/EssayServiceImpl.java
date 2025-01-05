@@ -7,14 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yy.enums.EssayStatus;
 import com.yy.enums.SortEnums;
 import com.yy.mapper.CommentMapper;
+import com.yy.mapper.RelationMapper;
 import com.yy.mapper.UserMapper;
-import com.yy.pojo.Comment;
-import com.yy.pojo.Essay;
-import com.yy.pojo.EssaySign;
-import com.yy.pojo.Sign;
+import com.yy.pojo.*;
 import com.yy.pojo.dto.EssayPageDto;
 import com.yy.pojo.vo.CommentVo;
 import com.yy.pojo.vo.EssayVo;
+import com.yy.pojo.vo.UserVo;
 import com.yy.service.EssayService;
 import com.yy.mapper.EssayMapper;
 import com.yy.service.EssaySignService;
@@ -44,6 +43,8 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
     private UserMapper userMapper;
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private RelationMapper relationMapper;
     @Override
     public PageResult pageWithSign(EssayPageDto essayPageDto) {
         Page<Essay> iPage = new Page<>(essayPageDto.getPageNum(), essayPageDto.getPageSize());
@@ -63,8 +64,13 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
                 .stream()
                 .forEach(essay -> {
                     EssayVo essayVo = new EssayVo();
+                    UserVo userVo = new UserVo();
                     BeanUtils.copyProperties(essay, essayVo);
-                    essayVo.setUser(userMapper.selectById(essay.getUserId()));
+                    // 根据文章id和用户id查询对应的用户
+                    User user = selectUser(essay.getUserId());
+                    BeanUtils.copyProperties(user,userVo);
+                    userVo.setFanIds(getFansIds(essay.getUserId()));
+                    essayVo.setUser(userVo);
                     essayVo.setSignsList(essaySignService.getWithSign(essay.getId()));
                     // 根据文章id查询对应的评论
                     essayVo.setCommentNum(essay.getCommentNum());
@@ -72,6 +78,26 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
                 });
 
         return new PageResult(page.getTotal(), list);
+    }
+
+    private User selectUser( Long userId) {
+        QueryWrapper<User> wq =new QueryWrapper<>();
+        wq.lambda().eq(User::getId, userId);
+        return userMapper.selectOne(wq);
+    }
+
+    // 查询用户表。根据用户查询对应的用户分时id
+    private List<Long> getFansIds(Long userId) {
+        QueryWrapper<Relation> wq =new QueryWrapper<>();
+        wq.lambda().eq(Relation::getFocusedId, userId);
+        List<Relation> relations = relationMapper.selectList(wq);
+        List<Long> fansIds = new ArrayList<>();
+        Optional.ofNullable(relations).orElse(new ArrayList<>())
+                .stream()
+                .forEach(item -> {
+                    fansIds.add(item.getFocusId());
+                });
+        return fansIds;
     }
 
     @Override

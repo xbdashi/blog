@@ -27,13 +27,35 @@
                         </div>
                         <div class="userInfo">
                             <div class="userName">
-                                <div class="userAvatar">
+                                <div class="userAvatar" @mousemove="showUserInfo(item)" @mouseout="hideUserInfo()">
                                     <div style="display: flex;justify-content: center;align-items: center;border-radius: 50%;width:35px;height:35px;">
                                         <img v-if="item.user.photo && item.user.photo != ''" :src="item.user.photo" width="35px" alt="">
                                         <img v-else src="@/assets/avtor.png" width="35px" alt="">
                                     </div>
                                     &nbsp;&nbsp;
                                     <span>{{item.user.username}}</span>
+
+                                    <!-- 悬浮显示用户信息 -->
+                                     <div class="userinfo" :class="{ 'fade-in': hoverUser == item.userId }">
+                                        <div class="user-header">
+                                            <img :src="item.user.photo || '@/assets/avtor.png'" alt="">
+                                            <h3>{{item.user.username}}</h3>
+                                        </div>
+                                        <div class="user-stats">
+                                            <div class="stat-item">
+                                                <div class="stat-value">{{item.user.focus || 9999}}</div>
+                                                <div class="stat-label">关注</div>
+                                            </div>
+                                            <div class="stat-item">
+                                                <div class="stat-value">{{item.user.fans || 9999}}</div>
+                                                <div class="stat-label">粉丝</div>
+                                            </div>
+                                        </div>
+                                        <div v-if="user && user.id != item.user.id" >
+                                            <div @click="toFollow(item)" v-if="!item.user.fanIds.includes(user.id)" :class="!item.user.fanIds.includes(user.id) ? 'focus' :'closeFocus'">关注 <i class="iconfont icon-yiguanzhu"></i></div>
+                                            <div v-else class='closeFocus'>取消关注 <i class="iconfont icon-yiguanzhu"></i></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="sign">
@@ -108,6 +130,7 @@
                 </div>
             </div>
         </div>
+        
         <!-- 编辑按钮 -->
          <div class="edit" @click="addBtn"  @mouseover="showTooltip" @mouseout="hideTooltip">
             <div class="tooltip" v-if="isTooltipVisible">新增文章</div>
@@ -115,8 +138,8 @@
          </div>
     </div>
 </template>
-<script setup lang="ts">
-import { ChatDotSquare, Handbag, Location, Phone, Timer, View } from '@element-plus/icons-vue';
+<script setup>
+import { ChatDotSquare, Handbag, House, Location, Phone, Timer, View } from '@element-plus/icons-vue';
 import { onMounted, reactive, ref, watch } from 'vue';
 import {useGetAssay,useGetAllTag, useAddViews,useGetSort} from '@/api/layout/index';
 import {useTitleStore} from '@/stores/search'
@@ -125,7 +148,7 @@ import { loadTop8Params} from '@/tools/page';
 import { useInfoStore } from '@/stores/essayInfo';
 import { useUserStore } from '@/stores/user';
 const {setInfo} = useInfoStore()
-const {user} = useUserStore()
+const {user,addFocus} = useUserStore()
 
 const router = useRouter()
 // 添加文字的 消息提示
@@ -138,6 +161,17 @@ const showTooltip = () => {
 const hideTooltip = () => {
   isTooltipVisible.value = false;
 };
+const hoverUser = ref()
+
+// 获取到当前用户信息
+const showUserInfo = (item)=>{
+    if(item.id == hoverUser.value) return // 如果和上一次id一样就不执行
+    hoverUser.value = item.userId 
+}
+const hideUserInfo = ()=>{
+    hoverUser.value = ''
+}
+
 // .............
 // 获取paina标题
 const {getTitle} = useTitleStore()
@@ -148,14 +182,13 @@ const pageData = reactive({
     sort:"2" // 默认为最新
 })
 
-const dataList = ref<any>([])
+const dataList = ref([])
 
 // 获取top8
-const tagTop8 = ref<any>([])
+const tagTop8 = ref([])
 const top8 =  async()=>{
     const res = await useGetAllTag(loadTop8Params)
     tagTop8.value = res.data
- 
 }
 // 新增文章跳转
 const addBtn = ()=>{
@@ -173,7 +206,7 @@ const getLatest = async ()=>{
     const res = await useGetSort('FRESH')
     newList.value = res.data
 }
-const formatDate = (dateString:string) => {
+const formatDate = (dateString) => {
   const date = new Date(dateString)
   return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
 }
@@ -185,7 +218,7 @@ const getEssay = async ()=>{
 }
 // 查看文章的最新或最热
 const isActive = ref(false)
-const active = (sort:string)=>{
+const active = (sort)=>{
     pageData.sort = sort
     getEssay()
 }
@@ -199,13 +232,34 @@ watch(()=>getTitle(), async()=>{
 })
 // 到底加载
 const load = async ()=>{
-    console.log("到底了...")
     pageData.pageNum++
     const res = await useGetAssay(pageData)
     dataList.value.push(...res.data.rows)
 }
+// 关注用户 userId --> 被关注用户的id
+// 存入这次页面关注的用户
+const focusIds = ref([])
+const toFollow = (essay)=>{
+    // 循环遍历文章的列表 将和这个user的id一样的用户的粉丝量+1
+    dataList.value.forEach(item=>{
+        if(item.id === essay.id){
+            // 将点击的用户粉丝+1
+            item.fans = (Number(item.fans)+1).toString()
+            // 粉丝列表添加当前用户
+            item.user.fanIds.push(user?.id)
+            focusIds.value.push(essay?.userId)
+            item.user.fans = (Number(item.user.fans)+1).toString()
+            // 将当前用户的关注数+1
+            addFocus((Number(user?.focus)+1).toString())
+            
+        }
+    })
+
+    // 增加被关注用户的粉丝数
+
+}
 // 跳转详细页面
-const info = async(item:any)=>{
+const info = async(item)=>{
     // 通过id查出对应的文章，将他的阅读量+1
     await useAddViews(item.id)
     // 将对象转换为字符串存入paina
@@ -223,7 +277,7 @@ onMounted(()=>{
 })
 
 </script>  
-<style scoped>
+<style scoped lang="less">
 .isActive{
     color: #5fb878;
 }
@@ -386,7 +440,95 @@ onMounted(()=>{
         height: 60px;
         display: flex;
         align-items: center;
-        cursor: pointer;
+        position: relative;
+
+        .userinfo {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        width: 350px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+
+        &.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+
+            img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+            }
+
+            h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+            }
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #f0f0f0;
+
+            .stat-item {
+            text-align: center;
+            padding: 0 10px;
+
+            .stat-value {
+                font-size: 20px;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 4px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+                color: #666;
+            }
+            }
+        }
+        .focus{
+            width: 100%;
+            height: 30px;
+            background: #409eff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .closeFocus{
+            width: 100%;
+            height: 30px;
+            background: rgb(229, 74, 74);
+           
+            color: blue;
+        
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        }
     }
 }
 
@@ -429,4 +571,4 @@ onMounted(()=>{
   white-space: nowrap;
   z-index: 1000;
 }
-</style>
+</style>@/api/model@/api/model/userMondel@/api/model/model

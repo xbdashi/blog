@@ -7,17 +7,17 @@
         <div class="nav">
           <nav>
             <ul ref="navbarTextRef" style="display:flex;">
-              <li><a @click="active('home')" :class="{ active: activeNav === '/home' }">首页</a></li>
-              <li><a @click="active('categories')"  :class="{ active: activeNav === '/categories' }">文章分类</a></li>
-              <li><a @click="active('tags')"  :class="{ active: activeNav === '/tags' }">标签</a></li>
-              <li><a @click="active('guestbook')" :class="{ active: activeNav === '/guestbook' }">留言板</a></li>
+              <li><a @click="active('home')" :class="{ active: activeNav == '/home' }">首页</a></li>
+              <li><a @click="active('categories')"  :class="{ active: activeNav == '/categories' }">文章分类</a></li>
+              <li><a @click="active('tags')"  :class="{ active: activeNav == '/tags' }">标签</a></li>
+              <li><a @click="active('guestbook')" :class="{ active: activeNav == '/guestbook' }">留言板</a></li>
             </ul>
           </nav>
         </div>
         <div class="login">
-          <div style="margin-right: 55px;">
+          <div style="margin-right: 55px;display: flex;justify-content: center;align-items: center;">
             <img v-if="user?.photo && user?.photo != ''" :src='user.photo ? user.photo :"@/assets/header.jpg"' width="35px" alt="">
-            <img v-else src="@/assets/avtor.png" alt="">
+            <img v-else  width="35px" src="@/assets/avtor.png" alt=""><span style="color: #333;font-size: 13px;">&nbsp;&nbsp;{{user ? user.username : '你好，请登录'}}</span>
           </div>
           <!-- 鼠标悬浮弹出菜单 -->
           <div class="drawer">
@@ -44,11 +44,14 @@
                 </div>
               </div>
               
-              <div class="menu-items">
+              <div class="menu-items" v-if="user">
                 <div class="menu-item" @click="toPersonal"><i class="iconfont icon-yonghu"></i>个人中心</div>
                 <div class="menu-item" @click="toContent"><i class="iconfont icon-neirong"></i>内容管理</div>
                 <div class="menu-item" @click="toMessage"><i class="iconfont icon-xiaoxi"></i>消息列表</div>
                 <div class="menu-item logout" @click="logout"><i class="iconfont icon-guanbi"></i>退出</div>
+              </div>
+              <div v-else class="menu-items" style="height: 200px;">
+                <div class="menu-item" @click="login"><i class="iconfont icon-yonghu"></i>登录</div>
               </div>
             </div>
         </div>
@@ -59,10 +62,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
-import {useTitleStore} from '@/stores/search'
 import { useUserStore } from '@/stores/user';
-const {user} = useUserStore()
-const titleStore = useTitleStore();
+const {user,removeUser} = useUserStore()
 
   const router = useRouter();
   const route = useRoute();
@@ -72,18 +73,18 @@ const titleStore = useTitleStore();
     activeNav.value = route.path;
   },{immediate: true})
 
-  const search = ref('');
-
-  const searchBtn = ()=>{
-    titleStore.setTitle(search.value)
-  }
-  const active = (path) => {
+const active = (path) => {
     activeNav.value = path;
     router.push('/'+path)
   };
-  
-const logout = ()=>{
+const login = ()=>{
   router.push('/login')
+}
+const logout = ()=>{
+  console.log('点击了退出登录')
+  removeUser();
+  // 刷新页面
+  window.location.reload();
 }
   </script>
   

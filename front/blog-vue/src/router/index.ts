@@ -6,7 +6,12 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/login/index.vue')
+      component: () => import('/src/views/login/index.vue')
+    },
+    {
+      path: '/forget',
+      name: 'forget',
+      component: () => import('@/views/login/forgetPwd.vue')
     },
     {
       path: '/',
@@ -15,6 +20,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/layout/index.vue'),
+      redirect:'/home',
       children:[
         {
           path: '/home',

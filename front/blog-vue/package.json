@@ -14,6 +14,7 @@
     "@element-plus/icons-vue": "^2.3.1",
     "@kangc/v-md-editor": "^2.3.18",
     "axios": "^1.7.8",
+    "bad-words": "^4.0.0",
     "element-plus": "^2.8.8",
     "pinia": "^2.2.6",
     "pinia-plugin-persist": "^1.0.0",

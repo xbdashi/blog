@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { onMounted } from 'vue';
+import { RouterView, useRouter } from 'vue-router'
+import { useUserStore } from './stores/user';
+import { useGetUser } from '@/api/user/user'
+
+const {user} = useUserStore()
+const router = useRouter()
+
+
 </script>
 
 <template>

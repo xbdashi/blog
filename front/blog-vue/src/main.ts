@@ -21,13 +21,13 @@ VMdPreview.use(githubTheme, {
 VMdEditor.use(githubTheme, {
   Hljs: hljs,
 });
-
-const app = createApp(App)
 const pinia = createPinia()
+const app = createApp(App)
+app.use(pinia)
 pinia.use(piniaPluginPersistedstate)
 app.use(VMdEditor)
 app.use(VMdPreview)
-app.use(pinia)
+
 app.use(router)
 app.use(ElementPlus)
 app.mount('#app')

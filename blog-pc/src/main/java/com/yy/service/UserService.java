@@ -2,6 +2,11 @@ package com.yy.service;
 
 import com.yy.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yy.pojo.dto.LoginDto;
+import com.yy.utils.Result;
+
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
 * @author Max
@@ -10,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    Map<String,Object> login(LoginDto loginDto, HttpSession httpSession);
+
+    Result resetPwd(LoginDto loginDto);
 }

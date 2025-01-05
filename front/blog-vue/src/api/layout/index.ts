@@ -40,7 +40,7 @@ export const useGetCaptcha = () => {
 };
 // 登录
 export const useLogin = (data: any) => {
-  return http.post("/login", data);
+  return http.post("/sys/login", data);
 };
 // 通过parentid查询对应的username
 export const useGetUsernameByParentId = (parentId:string) => {

@@ -40,15 +40,23 @@
                      @cancelReply="cancelReply"
                      @submitReply="submitReply"
                      />
-                </div>
-            
+</div>
+<!-- 添加展开更多按钮 -->
+<div v-if="commentList && commentList.length > initialDisplayCount" class="show-more">
+    <el-button 
+        type="text" 
+        @click="toggleShowMore"
+    >
+        {{ showAll ? '收起' : `展开更多评论 (${commentList.length - initialDisplayCount})` }}
+    </el-button>
+</div>
 </template>
 
 <script setup lang="ts">
 import useTimeFormat from '@/hook/useTimeFormat';
 import Comment from '@/compoents/Comment.vue';
 const { formatDate } = useTimeFormat();
-import { onMounted ,ref, watch} from 'vue';
+import { onMounted ,ref, watch,computed} from 'vue';
 import { useGetUsernameByParentId } from '@/api/layout';
 // 接收父组件传来的方法
 const emit = defineEmits(['addLike', 'showReplyBox','cancelReply','submitReply'])
@@ -103,6 +111,21 @@ interface comment{
     children:Array<comment>,
     id:string
 }
+const initialDisplayCount = 3; // 初始显示的评论数
+const showAll = ref(false);
+
+// 计算要显示的评论列表
+const displayedComments = computed(() => {
+    if (!props.commentList) return [];
+    return showAll.value 
+        ? props.commentList 
+        : props.commentList.slice(0, initialDisplayCount);
+});
+
+// 切换显示全部/收起
+const toggleShowMore = () => {
+    showAll.value = !showAll.value;
+};
 
 </script>
 <style scoped>
