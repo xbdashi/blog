@@ -3,6 +3,7 @@ package com.yy.controller.pc;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yy.enums.UserStatus;
 import com.yy.exception.AccountException;
 import com.yy.exception.CodeException;
 import com.yy.pojo.User;
@@ -35,5 +36,11 @@ public class SysController {
     @PostMapping("/resetPwd")
     public Result resetPwd(@RequestBody LoginDto loginDto){
         return userService.resetPwd(loginDto);
+    }
+
+    @GetMapping("{id}")
+    public Result logout(@PathVariable Long id){
+        userService.updateUserStatus(id, UserStatus.LOGOUT.getCode());
+        return Result.success();
     }
 }

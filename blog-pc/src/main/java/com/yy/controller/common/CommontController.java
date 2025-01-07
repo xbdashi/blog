@@ -1,8 +1,13 @@
 package com.yy.controller.common;
 
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.Producer;
+import com.yy.exception.EmailException;
+import com.yy.pojo.User;
 import com.yy.pojo.dto.LoginDto;
+import com.yy.service.UserService;
 import com.yy.utils.EmailUtil;
 import com.yy.utils.Result;
 import io.swagger.annotations.Api;
@@ -42,6 +47,8 @@ public class CommontController {
     private FileStorageService fileStorageService;//注入实列
     @Autowired
     private EmailUtil emailUtil;
+    @Autowired
+    private UserService userService;
     @GetMapping("/code")
     @ApiOperation("获取验证码")
     // knif4j将这两个参数标记为不是参数
@@ -73,6 +80,13 @@ public class CommontController {
     @PostMapping("/email")
     public Result getEmailCode(@RequestBody LoginDto loginDto) {
         log.info("发送的邮箱{}",loginDto);
+        // 通过邮箱查询用户，如果有在发送
+        QueryWrapper<User> wq = new QueryWrapper<>();
+        wq.lambda().eq(User::getEmail,loginDto.getEmail());
+        User one = userService.getOne(wq);
+        if(one == null){
+            throw new EmailException(411,"邮箱没有绑定任何用户");
+        }
         // 存入redis 5分钟过期
         emailUtil.send(loginDto.getEmail());
         return Result.success(200,"发送成功",null);

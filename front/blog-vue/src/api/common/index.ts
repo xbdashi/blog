@@ -1,12 +1,9 @@
 import http from "@/http";
-import type { userMondel } from "../model/userMondel";
 
-
-
-export const useGetEmailCode = (data:userMondel)=>{
-    return http.post('/sys/email',data,{timeout:30000})
+export const useGetEmailCode = (data:any)=>{
+    return http.post('/email',data,{timeout:30000})
 }
-export const useResetPwd = (data:userMondel)=>{
+export const useResetPwd = (data:any)=>{
     return http.post('/sys/resetPwd',data)
 }
 

@@ -118,7 +118,7 @@ public class EssayServiceImpl extends ServiceImpl<EssayMapper, Essay>
     @Transactional
     public int insertEssay(Essay essay) {
         // 默认状态为 审核中
-        essay.setStatu(EssayStatus.REVIEWING.getCode());
+        essay.setId(essay.getStatus());
         // 喜欢 视图 评论数 全部为0
         essay.setLikes(0L);
         essay.setViews(0L);

@@ -18,4 +18,6 @@ public interface UserService extends IService<User> {
     Map<String,Object> login(LoginDto loginDto, HttpSession httpSession);
 
     Result resetPwd(LoginDto loginDto);
+    // 修改用户状态
+    void updateUserStatus(Long userId,Long status);
 }

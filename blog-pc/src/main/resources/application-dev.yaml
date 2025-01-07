@@ -84,3 +84,4 @@ blog:
   jwt:
     secret: asdasd
     expire: 720000
+  maxCount: 3

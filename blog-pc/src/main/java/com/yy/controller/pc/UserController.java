@@ -8,12 +8,14 @@ import com.yy.service.UserService;
 import com.yy.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("user")
 @Api(tags = "用户接口")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
@@ -29,5 +31,12 @@ public class UserController {
     @PostMapping("focus")
     public Result focus(@RequestBody Relation relation){
         return Result.success(relationService.save(relation));
+    }
+
+    @PutMapping
+    public  Result update(@RequestBody User user){
+        log.info("传来的用户{}",user);
+        userService.updateById(user);
+        return Result.success();
     }
 }

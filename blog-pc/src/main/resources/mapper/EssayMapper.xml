@@ -11,7 +11,7 @@
             <result property="describes" column="desc" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="views" column="views" jdbcType="VARCHAR"/>
-            <result property="statu" column="status" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="likes" column="like" jdbcType="VARCHAR"/>
             <result property="commentNum" column="comment_num" jdbcType="VARCHAR"/>
             <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>

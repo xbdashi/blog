@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yy.enums.UserStatus;
 import com.yy.exception.AccountException;
 import com.yy.exception.CodeException;
 import com.yy.pojo.User;
@@ -43,6 +44,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         qw.lambda().eq(User::getUsername,loginDto.getUsername());
         User user = userMapper.selectOne(qw);
         String code = httpSession.getAttribute("code")+"";
+        // 如果状态为0则是被冻结
+        if(Objects.equals(user.getStatus(), UserStatus.LOCKED.getCode())){
+            throw new AccountException(400,"账号已被冻结");
+        }
         if(!code.equalsIgnoreCase(loginDto.getCode())){
             throw new CodeException(400,"验证码错误");
         }
@@ -64,11 +69,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }else{ // 登录
             checkUser(user,loginDto,httpSession);
         }
+        // 修改用户未登录的状态
+        updateUserStatus(user.getId(), UserStatus.LOGIN.getCode());
         UserContext.setUserId(user.getId());
         Map<String,Object> map = new HashMap<>();
         map.put("token",jwtUtils.createJwt(user.getId()));
         map.put("userinfo",user);
         return map;
+    }
+
+    // 修改用户状态
+    public void updateUserStatus(Long userId,Long status) {
+        User user1 = new User();
+        user1.setIsLogin(status);
+        user1.setId(userId);
+        this.baseMapper.updateById(user1);
     }
 
     private void checkIsExists(LoginDto loginDto) {

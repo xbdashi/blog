@@ -6,7 +6,7 @@ const consfig = {
     baseURL: "/api",
     timeout: 5000,
 };
-
+const {removeUser} = useUserStore()
 export interface Result<T = any>{
     code: number;
     msg:string;
@@ -48,6 +48,12 @@ class Http{
                     ElMessage.warning(res.data.msg)
                     router.push("/")
                     return Promise.reject(res.data.msg)
+                }else if(res.data.code === 451){
+                    // 如果返回的是451 那么就用户已经冻结 自动退出页面
+                    ElMessage.warning(res.data.msg)
+                    removeUser();
+                    // 刷新页面
+                    window.location.reload();
                 }
                 if(res.data.code == 200){
                     return res.data;

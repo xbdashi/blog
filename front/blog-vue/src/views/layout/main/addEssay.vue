@@ -31,8 +31,8 @@
              </el-form-item>
               <!-- <v-md-preview :text="content"></v-md-preview> -->
             <div style="display: flex;justify-self: end;">
-                <el-button type="success" @click="commit" style="margin-left: 50px;">保存</el-button>
-                <el-button type="primary" @click="commit">发布</el-button>
+                <el-button type="success" @click="commit(0)" style="margin-left: 50px;">保存</el-button>
+                <el-button type="primary" @click="commit(1)">发布</el-button>
             </div>
         </el-form>
         <!-- 添加标签对话框 -->
@@ -128,7 +128,8 @@ const addSign = ()=>{
     dialog.height = 200
     show()
 }
-const commit = () => {
+const commit = (status) => {
+    // 点的提交 那么就是 1 ， 如果是保存那么就是0
     ruleFormRef.value.validate(async valid => {
             if(!user){
             ElNotification({
@@ -141,11 +142,13 @@ const commit = () => {
         }
         if (valid) {
             // 提交表单
+            addMondel.status = status
             addMondel.userId = user.id
             console.log(addMondel)
             const res = await useAddEssay(addMondel)
             if(res.code === 200){
                 ElMessage.success(res.msg)
+                router.push('/userinfo')
             }else{
                 ElMessage.error(res.msg)
             }

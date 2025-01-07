@@ -50,3 +50,7 @@ export const useGetUsernameByParentId = (parentId:string) => {
 export const useGetAllCommentByEssayId = (essayId:string)=>{
   return http.get(`/comment/count/${essayId}`)
 }
+
+export const useLogout = (id:string)=>{
+  return http.get(`/sys/${id}`)
+}

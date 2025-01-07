@@ -1,33 +1,30 @@
 <template>
     <div class="contain">
         <header>
-            <Header/>
+            <Nav/>
         </header>
         <section class="pubContain">
-     
-            <RouterView/>
-        
-            
+            <Transition name="slide-fade">
+                <RouterView/>
+            </Transition>
         </section>
     </div>
 </template>
 <script setup>
-import Header from '@/views/layout/header/index.vue'
+import Nav from '@/views/layout/header/index.vue'
 </script>
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
 }
 
-.fade-enter-from
-{
-    transform: translateX(-60px);
-  opacity: 0.1;
- 
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.fade-leave-to {
-    opacity: 0.1;
-    transform: translateY(30px);
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>

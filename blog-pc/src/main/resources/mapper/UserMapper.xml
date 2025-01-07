@@ -11,14 +11,15 @@
         <result property="photo" column="photo" jdbcType="VARCHAR"/>
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
         <result property="isIdentity" column="is_identity" jdbcType="LONGVARCHAR"/>
-        <result property="provinceId" column="province_id" jdbcType="LONGVARCHAR"/>
-        <result property="cityId" column="city_id" jdbcType="INTEGER"/>
-        <result property="distractId" column="distract_id" jdbcType="LONGVARCHAR"/>
+        <result property="province" column="province_id" jdbcType="LONGVARCHAR"/>
+        <result property="city" column="city_id" jdbcType="VARCHAR"/>
+        <result property="distract" column="distract_id" jdbcType="VARCHAR"/>
         <result property="isDelete" column="is_delete" jdbcType="LONGVARCHAR"/>
         <result property="isLogin" column="is_login" jdbcType="LONGVARCHAR"/>
         <result property="qq" column="qq" jdbcType="LONGVARCHAR"/>
-        <result property="wchat" column="wchat" jdbcType="LONGVARCHAR"/>
+        <result property="wechat" column="wechat" jdbcType="LONGVARCHAR"/>
         <result property="likes" column="likes" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="LONGNVARCHAR"/>
         <result property="version" column="version" jdbcType="LONGVARCHAR"/>
         <result property="fans" column="fans" jdbcType="VARCHAR"/>
         <result property="focus" column="focus" jdbcType="VARCHAR"/>
@@ -28,8 +29,8 @@
 
     <sql id="Base_Column_List">
         id,username,password,
-        email,photo,phone,province_id,city_id,distract_id,likes,
-        is_identity,qq,wcaht,is_delete,is_login,version,
+        email,photo,phone,province,city,distract,likes,
+        is_identity,status,qq,wcaht,is_delete,is_login,version,
         fans,focus,create_time,
         update_time
     </sql>

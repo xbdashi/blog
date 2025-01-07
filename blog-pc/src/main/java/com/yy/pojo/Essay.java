@@ -25,7 +25,7 @@ public class Essay implements Serializable {
     private String content;
     private Long views;
     // 文章状态 0是已保存，1审核中，2 已发布
-    private Long statu;
+    private Long status;
     private Long likes;
     private Long commentNum;
     private Integer isDelete;

@@ -7,7 +7,11 @@
             <span :class="pageData.sort == '1' ? 'isActive':''" @click="active('1')">最热</span>
          </div>
         <!-- 布局 -->
-        <div class="comment_grid" v-infinite-scroll="load">
+        <div class="comment_grid" v-infinite-scroll="load" 
+            :infinite-scroll-distance="10"
+            :infinite-scroll-immediate="false"
+            :infinite-scroll-disabled="loading"
+           >
             <!-- 卡片 -->
             <div class="comments"  v-for="item in dataList">
                 <div class="card">
@@ -230,11 +234,23 @@ watch(()=>getTitle(), async()=>{
 
     console.log(dataList.value)
 })
-// 到底加载
-const load = async ()=>{
-    pageData.pageNum++
-    const res = await useGetAssay(pageData)
-    dataList.value.push(...res.data.rows)
+// 添加 loading 状态
+const loading = ref(false)
+
+// 修改 load 函数
+const load = async () => {
+    try {
+        loading.value = true
+        pageData.pageNum++
+        const res = await useGetAssay(pageData)
+        if (res.data.rows && res.data.rows.length > 0) {
+            dataList.value.push(...res.data.rows)
+        }
+    } catch (error) {
+        console.error('加载更多数据失败:', error)
+    } finally {
+        loading.value = false
+    }
 }
 // 关注用户 userId --> 被关注用户的id
 // 存入这次页面关注的用户
@@ -301,6 +317,8 @@ onMounted(()=>{
     }
     .comment_grid{
         position: relative;
+    max-height: calc(100vh - 150px); /* 添加最大高度 */
+        
     }
     .comments{
         padding: 20px;

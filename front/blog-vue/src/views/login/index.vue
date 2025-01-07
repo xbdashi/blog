@@ -113,7 +113,7 @@ const getEmailCode =async ()=>{
     const res = await useGetEmailCode(loginModel)
         ElMessage.success(res.msg)
     } catch(err) {
-        console.log('捕获到错误:', err)
+        
     } finally {
         isLoadingStatus.value = false
     }
@@ -138,8 +138,7 @@ const login = async () => {
             ElMessage.error(res.msg || '登录失败')
         }
     } catch (error) {
-        console.error('登录错误:', error)
-        ElMessage.error('登录失败，请稍后重试')
+        
     } finally {
         // 重新获取验证码
         getCode()

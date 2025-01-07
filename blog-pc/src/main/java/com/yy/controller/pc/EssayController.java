@@ -4,11 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yy.constants.ExceptionStatus;
+import com.yy.enums.EssayStatus;
 import com.yy.enums.SortEnums;
 import com.yy.exception.InsertException;
 import com.yy.pojo.Essay;
+import com.yy.pojo.EssaySign;
 import com.yy.pojo.dto.EssayPageDto;
+import com.yy.pojo.vo.CommentVo;
+import com.yy.pojo.vo.EssayVo;
 import com.yy.service.EssayService;
+import com.yy.service.EssaySignService;
 import com.yy.utils.PageResult;
 import com.yy.utils.Result;
 import io.swagger.annotations.Api;
@@ -16,9 +21,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,6 +37,9 @@ import java.util.stream.Collectors;
 public class EssayController {
     @Autowired
     private EssayService essayService;
+    @Autowired
+    private EssaySignService essaySignService;
+
     @PostMapping("/page")
     @ApiOperation(value = "分页查询")
     public Result<PageResult> page(@RequestBody EssayPageDto essayPageDto){
@@ -74,5 +84,21 @@ public class EssayController {
         essay.setViews(essay.getViews()+1);
         essayService.updateById(essay);
         return Result.success();
+    }
+    // 根据用户id查询对应的文章
+    @GetMapping("/{userId}")
+    public Result<List<EssayVo>> getEssayByUserId(@PathVariable("userId") Long userId){
+        QueryWrapper<Essay> wq = new QueryWrapper<>();
+        wq.lambda().eq(Essay::getUserId, userId).orderByDesc(Essay::getCreateTime);
+        List<Essay> list = essayService.list(wq);
+
+        List<EssayVo> res = new ArrayList<>();
+        list.stream().forEach(item ->{
+            EssayVo essayVo = new EssayVo();
+            BeanUtils.copyProperties(item,essayVo);
+            essayVo.setSignsList(essaySignService.getWithSign(item.getId()));
+            res.add(essayVo);
+        });
+        return Result.success(res);
     }
 }

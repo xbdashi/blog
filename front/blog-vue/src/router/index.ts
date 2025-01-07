@@ -53,8 +53,25 @@ const router = createRouter({
           component: () => import('@/views/layout/main/essayInfo.vue'),
         },
       ]
-    
-    }
+    },
+    {
+      path:'/userinfo',
+      name:'userInfo',
+      component:()=>import('@/views/userInfo/layout.vue'),
+    },
+    {
+      path:'/message',
+      name:'message',
+      component:()=>import('@/views/message/index.vue'),
+      redirect:'/message/private',
+      children:[
+        {
+          path:'private',
+          name:'private',
+          component:()=>import('@/views/message/private/index.vue'),
+        }
+      ]
+    },
   ],
 })
 

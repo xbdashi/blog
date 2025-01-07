@@ -2,11 +2,13 @@ package com.yy;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.dfa.SensitiveUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
 import com.yy.utils.JwtUtils;
 import com.yy.utils.PasswordUtil;
+import com.yy.utils.SensitivityFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +34,7 @@ public class TestImg {
     private ValueOperations<String, Object> valueOperations;
     @Autowired
     private JwtUtils jwtUtils;
+
     @Test
     // 测试邮件发送
     public void test(){
@@ -86,4 +89,6 @@ public class TestImg {
         Long l = jwtUtils.validateJwt("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MzU5NTIyNzIsImlkIjoxLCJleHAiOjE3MzU5NTI5OTIsImlhdCI6MTczNTk1MjI3Mn0.rS509tCF8DgkK6kqx9XYLkRugObVnm6RUCK1PzogpXM");
         System.out.println(l);
     }
+
+
 }

@@ -9,7 +9,7 @@
             <ul ref="navbarTextRef" style="display:flex;">
               <li><a @click="active('home')" :class="{ active: activeNav == '/home' }">首页</a></li>
               <li><a @click="active('categories')"  :class="{ active: activeNav == '/categories' }">文章分类</a></li>
-              <li><a @click="active('tags')"  :class="{ active: activeNav == '/tags' }">标签</a></li>
+              <li><a @click="active('tags')"  :class="{ active: activeNav == '/tags' }">公告</a></li>
               <li><a @click="active('guestbook')" :class="{ active: activeNav == '/guestbook' }">留言板</a></li>
             </ul>
           </nav>
@@ -63,6 +63,7 @@
 import { ref, watch } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { useLogout } from '@/api/layout';
 const {user,removeUser} = useUserStore()
 
   const router = useRouter();
@@ -80,11 +81,18 @@ const active = (path) => {
 const login = ()=>{
   router.push('/login')
 }
-const logout = ()=>{
+const logout =async()=>{
   console.log('点击了退出登录')
   removeUser();
   // 刷新页面
   window.location.reload();
+  await useLogout(user?.id)
+}
+const toPersonal = ()=>{
+  router.push('/userinfo')
+}
+const toMessage = ()=>{
+  router.push('/message')
 }
   </script>
   
