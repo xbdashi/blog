@@ -74,10 +74,10 @@ dromara:
     aliyun-oss:
       - platform: aliyun-oss-1 # 存储平台标识
         enable-storage: true  # 启用存储
-        access-key: LTAI5tGrKDvwyA9E4sEJzCEu
-        secret-key: BrySY7Xn3exR7rcDUcp0Gzty0a4FdZ
-        end-point: oss-cn-beijing.aliyuncs.com
-        bucket-name: blog009
+        access-key: xxx
+        secret-key: xxx
+        end-point: xxx
+        bucket-name: xxx
         domain: https://blog009.oss-cn-beijing.aliyuncs.com/ # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
         base-path: os/ # 基础路径
 blog:
